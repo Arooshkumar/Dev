@@ -7,7 +7,7 @@
       "type": "String"
     },
     "integrationAccounts_Peeyushpay_externalid": {
-      "defaultValue": "/subscriptions/43e592b2-05f6-4577-8826-391e3a0cdaac/resourceGroups/myfirstlogicapp/providers/Microsoft.Logic/integrationAccounts/Peeyushpay",
+      "defaultValue": "/subscriptions/43e592b2-05f6-4577-8826-391e3a0cdaac/resourceGroups/peeyush/providers/Microsoft.Logic/integrationAccounts/ArooshIntegration",
       "type": "String"
     }
   },
