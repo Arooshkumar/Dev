@@ -2,11 +2,11 @@
   "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
-    "workflows_PayAggregration_name": {
-      "defaultValue": "Devop",
+    "workflows_Loreal_name": {
+      "defaultValue": "Dev",
       "type": "String"
     },
-    "integrationAccounts_Peeyushpay_externalid": {
+    "integrationAccounts_ArooshIntegration_externalid": {
       "defaultValue": "/subscriptions/43e592b2-05f6-4577-8826-391e3a0cdaac/resourceGroups/ArooshRG/providers/Microsoft.Logic/integrationAccounts/ArooshIntegration",
       "type": "String"
     }
@@ -16,12 +16,17 @@
     {
       "type": "Microsoft.Logic/workflows",
       "apiVersion": "2017-07-01",
-      "name": "[parameters('workflows_PayAggregration_name')]",
-      "location": "southindia",
+      "name": "[parameters('workflows_Loreal_name')]",
+      "location": "centralindia",
+      "identity": {
+        "principalId": "9f8bd4e0-8622-412d-bdfc-13a9944c718c",
+        "tenantId": "611ebc0f-a108-47e0-9dc4-a66df2e4cff9",
+        "type": "SystemAssigned"
+      },
       "properties": {
         "state": "Enabled",
         "integrationAccount": {
-          "id": "[parameters('integrationAccounts_Peeyushpay_externalid')]"
+          "id": "[parameters('integrationAccounts_ArooshIntegration_externalid')]"
         },
         "definition": {
           "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
@@ -37,15 +42,6 @@
             }
           },
           "actions": {
-            "Compose": {
-              "runAfter": {
-                "Flat_File_Decoding": [
-                  "Succeeded"
-                ]
-              },
-              "type": "Compose",
-              "inputs": "@body('Flat_File_Decoding')"
-            },
             "Flat_File_Decoding": {
               "runAfter": {},
               "type": "FlatFileDecoding",
@@ -53,34 +49,10 @@
                 "content": "@{triggerBody()}",
                 "integrationAccount": {
                   "schema": {
-                    "name": "PeeyushNewSchema"
+                    "name": "PayAggregation_HCE_ICF"
                   }
                 }
               }
-            },
-            "For_each": {
-              "foreach": "@xpath(xml(body('Flat_File_Decoding')),'//*[local-name()=\"Employee\"]')",
-              "actions": {
-                "Transform_XML_to_JSON": {
-                  "runAfter": {},
-                  "type": "Liquid",
-                  "kind": "XmlToJson",
-                  "inputs": {
-                    "content": "@{items('For_each')}",
-                    "integrationAccount": {
-                      "map": {
-                        "name": "Peeyush.Liquid"
-                      }
-                    }
-                  }
-                }
-              },
-              "runAfter": {
-                "Compose": [
-                  "Succeeded"
-                ]
-              },
-              "type": "Foreach"
             }
           },
           "outputs": {}
